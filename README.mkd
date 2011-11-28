@@ -1,0 +1,22 @@
+# Pidlock
+
+This is a ruby library for using pid-file based locking of programs/daemons to prevent multiple parallel running tasks.
+
+## Prerequisites
+
+The gem ``sys/proctable`` is required.
+
+## Usage
+
+```ruby
+require 'sys/proctable'
+
+Pidlock.new('my.pid').lock # tries to create a lock file '/var/run/my.pid';
+                           # raises an error if the file is locked or a program exists that 
+                           # has the same basename and pid (here: 'my')
+...
+```
+
+## TODO
+
+Lots still. First release.
