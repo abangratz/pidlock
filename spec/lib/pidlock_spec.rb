@@ -8,7 +8,8 @@ describe Pidlock do
     @file.stub(:flock => 0)
     @file.stub(:flush)
     @file.stub(:gets)
-    File.should_receive(:open).with('/var/run/x/my.pid', 'w+').and_return(@file)
+    File.stub(:open).with('/var/run/my.pid', 'w+').and_return(@file)
+    File.stub(:writable?).with('/var/run').and_return(true)
   end
   it "should create a file with the given name in /var/run" do
     Pidlock.new('my.pid').lock
@@ -49,7 +50,21 @@ describe Pidlock do
       }.should raise_error Pidlock::ProcessRunning
     end
 
-    it "should use /tmp if /var/run is not writeable"
-    it "should warn but start the process if the file exists but the process name does not match the pid"
+    it "should use /tmp if /var/run is not writeable" do
+      File.should_receive(:writable?).with('/var/run').and_return(false)
+      File.should_receive(:open).with('/tmp/my.pid', 'w+').and_return(@file)
+      Pidlock.new('my.pid').lock
+
+    end
+    it "should warn but continue if the file exists but the process name does not" do
+      @file.should_receive(:gets).and_return('667')
+      ps = stub("ProcTableStruct", :comm => 'test')
+      ::Sys::ProcTable.should_receive(:ps).with(667).and_return(nil)
+      STDERR.should_receive(:puts).with('WARNING: resetting stale lockfile')
+      @file.should_receive(:rewind)
+      @file.should_receive(:write).with(666)
+      Pidlock.new('my.pid').lock
+
+    end
   end
 end
