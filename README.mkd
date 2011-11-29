@@ -1,5 +1,7 @@
 # Pidlock
 
+[![Build Status](https://secure.travis-ci.org/abangratz/pidlock.png)](http://travis-ci.org/abangratz/pidlock)
+
 This is a ruby library for using pid-file based locking of programs/daemons to prevent multiple parallel running tasks.
 
 ## Prerequisites
