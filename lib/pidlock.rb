@@ -1,12 +1,20 @@
+require 'logger'
+
 class Pidlock
 
+  attr_accessor :logger
 
   class FileLockedException < Exception; end
   class ProcessRunning < Exception; end
+  
   def initialize(name)
+    dir = File.dirname(name)
     @name = File.basename(name)
-    @filename = File.join('/', 'var', 'run', @name)
+    @filename = File.expand_path(File.join('/', 'var', 'run', dir, @name))
+    @logger = Logger.new(STDERR)
   end
+
+
 
   def lock
     unless @file
@@ -18,7 +26,7 @@ class Pidlock
         if (old_process = Sys::ProcTable.ps(old_pid.chomp.to_i))
           raise ProcessRunning if old_process.comm == File.basename(@name, File.extname(@name))
         else
-          STDERR.puts "WARNING: resetting stale lockfile"
+          @logger.warn "WARNING: resetting stale lockfile"
           @file.rewind
         end
       end
