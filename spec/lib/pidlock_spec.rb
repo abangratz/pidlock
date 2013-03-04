@@ -9,7 +9,7 @@ describe Pidlock do
     @file.stub(:flock => 0)
     @file.stub(:flush)
     @file.stub(:gets)
-    File.stub(:open).with('/var/run/my.pid', 'w+').and_return(@file)
+    File.stub(:open).with('/var/run/my.pid', 'r+').and_return(@file)
     File.stub(:writable?).with('/var/run').and_return(true)
     Logger.stub!(:new => logger)
   end
@@ -26,7 +26,7 @@ describe Pidlock do
       Pidlock.new('my.pid').lock
     end
     it "uses a directory under /var/run if given" do
-      File.should_receive(:open).with("/var/run/my/my.pid", 'w+').and_return(@file)
+      File.should_receive(:open).with("/var/run/my/my.pid", 'r+').and_return(@file)
       File.should_receive(:writable?).with("/var/run/my").and_return(true)
       @file.should_receive(:write).with(666)
       Pidlock.new('my/my.pid').lock
@@ -61,7 +61,7 @@ describe Pidlock do
 
     it "uses /tmp if /var/run is not writeable" do
       File.should_receive(:writable?).with('/var/run').and_return(false)
-      File.should_receive(:open).with('/tmp/my.pid', 'w+').and_return(@file)
+      File.should_receive(:open).with('/tmp/my.pid', 'r+').and_return(@file)
       Pidlock.new('my.pid').lock
     end
     it "warns but continue if the file exists but the process name does not" do

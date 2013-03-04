@@ -21,7 +21,7 @@ class Pidlock
       unless (File.writable?(File.dirname(@filename)))
         @filename = File.join('/', 'tmp', @name)
       end
-      @file = File.open(@filename, 'w+') 
+      @file = File.open(@filename, 'r+') 
       if (old_pid = @file.gets)
         if (old_process = Sys::ProcTable.ps(old_pid.chomp.to_i))
           raise ProcessRunning if old_process.comm == File.basename(@name, File.extname(@name))
