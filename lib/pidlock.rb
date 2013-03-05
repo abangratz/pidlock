@@ -6,7 +6,7 @@ class Pidlock
 
   class FileLockedException < Exception; end
   class ProcessRunning < Exception; end
-  
+
   def initialize(name)
     dir = File.dirname(name)
     @name = File.basename(name)
@@ -21,7 +21,13 @@ class Pidlock
       unless (File.writable?(File.dirname(@filename)))
         @filename = File.join('/', 'tmp', @name)
       end
-      @file = File.open(@filename, 'r+') 
+
+      if File.exists?(@filename)
+        @file = File.open(@filename, 'r+')
+      else
+        @file = File.open(@filename, 'w+')
+      end
+
       if (old_pid = @file.gets)
         if (old_process = Sys::ProcTable.ps(old_pid.chomp.to_i))
           raise ProcessRunning if old_process.comm == File.basename(@name, File.extname(@name))
