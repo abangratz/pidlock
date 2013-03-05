@@ -19,7 +19,7 @@ class Pidlock
   def lock
     unless @file
       unless (File.writable?(File.dirname(@filename)))
-        @filename = File.join('/', 'tmp', @name)
+        @filename = File.join('/', 'tmp', @filename)
       end
       @file = File.open(@filename, 'r+') 
       if (old_pid = @file.gets)
