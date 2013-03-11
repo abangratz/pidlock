@@ -86,5 +86,18 @@ describe Pidlock do
       pidlock.logger = logger2
       pidlock.lock
     end
+    it "should close and remove the file if unlocked" do
+      @file.should_receive(:gets).and_return('667')
+      ps = stub("ProcTableStruct", :comm => 'test')
+      ::Sys::ProcTable.should_receive(:ps).with(667).and_return(nil)
+      logger.should_receive(:warn).with('WARNING: resetting stale lockfile')
+      @file.should_receive(:rewind)
+      @file.should_receive(:write).with(666)
+      lock = Pidlock.new('my.pid')
+      lock.lock
+      FileUtils.should_receive(:rm_f).with("/var/run/my.pid").and_return(true)
+      @file.should_receive(:close)
+      lock.unlock
+    end
   end
 end

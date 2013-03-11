@@ -1,4 +1,5 @@
 require 'logger'
+require 'fileutils'
 
 class Pidlock
 
@@ -34,6 +35,11 @@ class Pidlock
       @file.write Process.pid
       @file.flush
     end
+  end
+
+  def unlock
+    @file.close
+    FileUtils.rm_f(@filename)
   end
 
 end
