@@ -1,6 +1,6 @@
 # Pidlock
 
-[![Build Status](https://secure.travis-ci.org/abangratz/pidlock.png)](http://travis-ci.org/abangratz/pidlock)
+[![Build Status](https://travis-ci.org/abangratz/pidlock.png?branch=master)](https://travis-ci.org/abangratz/pidlock)
 
 This is a ruby library for using pid-file based locking of programs/daemons to prevent multiple parallel running tasks.
 
@@ -13,15 +13,17 @@ The gem ``sys/proctable`` is required.
 ```ruby
 require 'sys/proctable'
 
-Pidlock.new('my.pid').lock # tries to create a lock file '/var/run/my.pid';
-                           # raises an error if the file is locked or a program exists that
-                           # has the same basename and pid (here: 'my')
+pidlock = Pidlock.new('my.pid')   # Instantiates a lock
+pidlock.lock                      # tries to create a lock file '/var/run/my.pid';
+                                  # raises an error if the file is locked or a program exists that 
+                                  # has the same basename and pid (here: 'my')
 ...
+pidlock.unlock                    # closes and removes the file
 ```
 
 ## TODO
 
-Lots still. First release.
+* test unlocking in projects.
 
 
 ## LICENSE
