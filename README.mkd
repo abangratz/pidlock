@@ -14,7 +14,7 @@ The gem ``sys/proctable`` is required.
 require 'sys/proctable'
 
 Pidlock.new('my.pid').lock # tries to create a lock file '/var/run/my.pid';
-                           # raises an error if the file is locked or a program exists that 
+                           # raises an error if the file is locked or a program exists that
                            # has the same basename and pid (here: 'my')
 ...
 ```
@@ -22,3 +22,8 @@ Pidlock.new('my.pid').lock # tries to create a lock file '/var/run/my.pid';
 ## TODO
 
 Lots still. First release.
+
+
+## LICENSE
+
+[ISC License](LICENSE)
