@@ -23,15 +23,18 @@ class Pidlock
         @filename = File.join('/', 'tmp', @name)
       end
       @file = File.open(@filename, File::RDWR|File::CREAT, 0600) 
+      stale = nil
       if (old_pid = @file.gets)
         if (old_process = Sys::ProcTable.ps(old_pid.chomp.to_i))
           raise ProcessRunning if old_process.comm == File.basename(@name, File.extname(@name))
         else
           @logger.warn "WARNING: resetting stale lockfile"
           @file.rewind
+          stale = true
         end
       end
       @file.flock(File::LOCK_EX | File::LOCK_NB) or raise FileLockedException
+      @file.truncate(0) if stale
       @file.write Process.pid
       @file.flush
     end

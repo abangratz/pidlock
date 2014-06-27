@@ -70,6 +70,7 @@ describe Pidlock do
       ::Sys::ProcTable.should_receive(:ps).with(667).and_return(nil)
       logger.should_receive(:warn).with('WARNING: resetting stale lockfile')
       @file.should_receive(:rewind)
+      @file.should_receive(:truncate).with(0)
       @file.should_receive(:write).with(666)
       Pidlock.new('my.pid').lock
     end
@@ -81,6 +82,7 @@ describe Pidlock do
       logger.should_not_receive(:warn).with('WARNING: resetting stale lockfile')
       logger2.should_receive(:warn).with('WARNING: resetting stale lockfile')
       @file.should_receive(:rewind)
+      @file.should_receive(:truncate).with(0)
       @file.should_receive(:write).with(666)
       pidlock = Pidlock.new('my.pid')
       pidlock.logger = logger2
@@ -92,6 +94,7 @@ describe Pidlock do
       ::Sys::ProcTable.should_receive(:ps).with(667).and_return(nil)
       logger.should_receive(:warn).with('WARNING: resetting stale lockfile')
       @file.should_receive(:rewind)
+      @file.should_receive(:truncate).with(0)
       @file.should_receive(:write).with(666)
       lock = Pidlock.new('my.pid')
       lock.lock
