@@ -55,7 +55,7 @@ describe "Pidlock", :filesystem => true do
 
     it "enters the correct PID in the pidfile when the pid matches a different process" do
       # start with a stale PID in the file
-      File.write(@pid_file, '1111')
+      open(@pid_file, "w") {|f| f.write('1111') }
       File.read(@pid_file).should eq('1111')
       ps = stub("ProcTableStruct", :comm => 'other')
       ::Sys::ProcTable.should_receive(:ps).with(1111).and_return(ps)
