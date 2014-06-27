@@ -13,6 +13,7 @@ class Pidlock
     @name = File.basename(name)
     @filename = File.expand_path(File.join('/', 'var', 'run', dir, @name))
     @logger = Logger.new(STDERR)
+    @file = nil
   end
 
 
