@@ -15,7 +15,7 @@ require 'sys/proctable'
 
 pidlock = Pidlock.new('my.pid')   # Instantiates a lock
 pidlock.lock                      # tries to create a lock file '/var/run/my.pid';
-                                  # raises an error if the file is locked or a program exists that 
+                                  # raises an error if the file is locked or a program exists that
                                   # has the same basename and pid (here: 'my')
 ...
 pidlock.unlock                    # closes and removes the file
@@ -29,3 +29,8 @@ pidlock.unlock                    # closes and removes the file
 ## LICENSE
 
 [ISC License](LICENSE)
+
+
+## CONTRIBUTORS
+
+  - Greg Whiteley (https:/github/com/whitty)
