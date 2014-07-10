@@ -13,6 +13,7 @@ class Pidlock
     @name = File.basename(name)
     @filename = File.expand_path(File.join('/', 'var', 'run', dir, @name))
     @logger = Logger.new(STDERR)
+    @file = nil
   end
 
 
@@ -28,10 +29,11 @@ class Pidlock
           raise ProcessRunning if old_process.comm == File.basename(@name, File.extname(@name))
         else
           @logger.warn "WARNING: resetting stale lockfile"
-          @file.rewind
         end
       end
       @file.flock(File::LOCK_EX | File::LOCK_NB) or raise FileLockedException
+      @file.rewind
+      @file.truncate(0)
       @file.write Process.pid
       @file.flush
     end

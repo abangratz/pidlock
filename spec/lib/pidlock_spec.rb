@@ -9,6 +9,8 @@ describe Pidlock do
     @file.stub(:flock => 0)
     @file.stub(:flush)
     @file.stub(:gets)
+    @file.stub(:rewind)
+    @file.stub(:truncate)
     File.stub(:open).with('/var/run/my.pid', File::RDWR|File::CREAT, 0600).and_return(@file)
     File.stub(:writable?).with('/var/run').and_return(true)
     Logger.stub!(:new => logger)
@@ -66,21 +68,21 @@ describe Pidlock do
     end
     it "warns but continue if the file exists but the process name does not" do
       @file.should_receive(:gets).and_return('667')
-      ps = stub("ProcTableStruct", :comm => 'test')
       ::Sys::ProcTable.should_receive(:ps).with(667).and_return(nil)
       logger.should_receive(:warn).with('WARNING: resetting stale lockfile')
       @file.should_receive(:rewind)
+      @file.should_receive(:truncate).with(0)
       @file.should_receive(:write).with(666)
       Pidlock.new('my.pid').lock
     end
     it "should use a logger if injected" do
       logger2 = mock(Logger)
       @file.should_receive(:gets).and_return('667')
-      ps = stub("ProcTableStruct", :comm => 'test')
       ::Sys::ProcTable.should_receive(:ps).with(667).and_return(nil)
       logger.should_not_receive(:warn).with('WARNING: resetting stale lockfile')
       logger2.should_receive(:warn).with('WARNING: resetting stale lockfile')
       @file.should_receive(:rewind)
+      @file.should_receive(:truncate).with(0)
       @file.should_receive(:write).with(666)
       pidlock = Pidlock.new('my.pid')
       pidlock.logger = logger2
@@ -88,10 +90,10 @@ describe Pidlock do
     end
     it "should close and remove the file if unlocked" do
       @file.should_receive(:gets).and_return('667')
-      ps = stub("ProcTableStruct", :comm => 'test')
       ::Sys::ProcTable.should_receive(:ps).with(667).and_return(nil)
       logger.should_receive(:warn).with('WARNING: resetting stale lockfile')
       @file.should_receive(:rewind)
+      @file.should_receive(:truncate).with(0)
       @file.should_receive(:write).with(666)
       lock = Pidlock.new('my.pid')
       lock.lock
