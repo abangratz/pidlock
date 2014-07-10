@@ -21,7 +21,7 @@ class Pidlock
   def lock
     unless @file
       unless (File.writable?(File.dirname(@filename)))
-        @filename = File.join('/', 'tmp', @name)
+        @filename = File.join('/', 'tmp', @filename)
       end
       @file = File.open(@filename, File::RDWR|File::CREAT, 0600) 
       if (old_pid = @file.gets)
