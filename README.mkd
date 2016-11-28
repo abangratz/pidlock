@@ -6,7 +6,7 @@ This is a ruby library for using pid-file based locking of programs/daemons to p
 
 ## Prerequisites
 
-The gem ``sys/proctable`` is required.
+The gem ``pidlock`` is required.
 
 ## Usage
 
